@@ -9,34 +9,28 @@ angular.module('myApp.view1', ['ngRoute'])
     });
   }])
 
-  .controller('View1Ctrl', ['$scope', '$geolocation', function ($scope, $geolocation) {
-    $geolocation.watchPosition({
-      timeout: 60000,
-      maximumAge: 250,
-      enableHighAccuracy: true
-    });
-    $scope.myPosition = $geolocation.position; // this object updates regularly, it has 'error' property which is a 'truthy' and also 'code' and 'message' property if an error occurs
-
-    // //It has all the location data 
-    // '$scope.myPosition.coords'
-
-    // //It's truthy and gets defined when error occurs 
-    // '$scope.myPosition.error'
+  .controller('View1Ctrl', ['$scope', '$http', function ($scope, $http) {
+    var apiId = 'c170242baa576ba9cab6a1926c40e3fb';
+    var url = 'http://api.openweathermap.org/data/2.5/weather?';
+    var units = "metric";
+    var lang = "en";
+    var latLng = {};
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
+      navigator.geolocation.getCurrentPosition(function (position) {
+        latLng = {
+          'lat': position.coords.latitude,
+          'lng': position.coords.longitude
+        };
+        url += "lat=" + latLng.lat + "&lon=" + latLng.lng + "&units=" + units + "&lang=" + lang + "&appid=" + apiId;
+        $http.get(url).then(function (response) {
+          $scope.weather = response.data;
+          console.log($scope.weather);
+        });
+      },
+        function (err) {
+          console.log("err", err);
+        });
     } else {
       console.log("Geolocation is not supported by this browser.");
-    }
-    var latLng = {};
-
-    function showPosition(position) {
-      latLng = {
-        'lat': position.coords.latitude,
-        'lng': position.coords.longitude
-      };
-      $scope.location_address = latLng;
-    }
-    function showError(err) {
-      console.log("err", err);
     }
   }]);

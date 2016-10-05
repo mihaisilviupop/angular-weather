@@ -1,4 +1,13 @@
 <p>This is the partial for view 1.</p>
-{{myPosition}}<br>
-{{position}}
-{{location_address}}
+<!--{{myPosition}}<br>-->
+{{locationaddress}}
+ 
+The weather for your location is:<br>
+<div ng-repeat="item in weather.weather">
+description: <b> {{item.description}}</b><br>
+</div>
+temp:  <b>{{weather.main.temp}} &#x2103;</b><br>
+pressure:  <b>{{weather.main.pressure}} hPa</b><br>
+humidity:  <b>{{weather.main.humidity}} %</b><br>
+temp_min:  <b>{{weather.main.temp_min}} &#x2103;</b><br>
+temp_max:  <b>{{weather.main.temp_max}} &#x2103;</b><br>

@@ -7,5 +7,7 @@ npm start
 
 Tech
 ---------
-- angularjs
-- openWeatherMap
+- AngularJS
+- OpenWeatherMap
+- Bootstrap
+- Bootstrap-UI

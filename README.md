@@ -3,4 +3,9 @@
 
 Start
 --------
-npm start
+npm start 
+
+Tech
+---------
+- angularjs
+- openWeatherMap

@@ -1,21 +1,29 @@
-<h1>AngularJS Weather</h1>
-<div ng-if="!weather" class="col-md-offset-4  col-md-3">
-    <!--{{err.PositionError.message ? 'error' : err.PositionError.message}}-->
-    <h3 class="bg-danger">User denied Geolocation</h3>
-    <div class="form-group">
-        <label for="states">Search for a Country</label>
-        <input type="text" ng-model="selectedCountry" typeahead-on-select="getWeatherForCountry(selectedCountry)" uib-typeahead="country.name for country in countries | filter:$viewValue | limitTo:8" class="form-control" typeahead-show-hint="true" typeahead-min-length="0">
-    </div>
-    {{ selectedCountry ? 'You have selected: ' + selectedCountry :  ''}}
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <h1>AngularJS Weather</h1>
+        <div ng-if="!weather" class="col-md-offset-4  col-md-3">
+            <!--{{err.PositionError.message ? 'error' : err.PositionError.message}}-->
+            <h3 class="bg-danger">User denied Geolocation</h3>
+        </div>
+        <div ng-if="!weather">
+            <div class="form-group">
+                <label for="states">Search for a Country</label>
+                <input type="text" ng-model="selectedCountry" typeahead-on-select="vm.openWeather.getWeatherForCountry(selectedCountry)"
+                    uib-typeahead="country.name for country in countries | filter:$viewValue | limitTo:8" class="form-control"
+                    typeahead-show-hint="true" typeahead-min-length="0">
+            </div>
+            {{ selectedCountry ? 'You have selected: ' + selectedCountry : ''}}
+        </div>
 
-<div ng-if="weather" class="bg-warning col-md-offset-4 col-md-3">
-    <div ng-repeat="item in weather.weather">
-        <h3>Today's weather is: <b> {{item.description}}</b><br></h3>
+        <div ng-if="weather" class="bg-warning col-md-offset-4 col-md-3">
+            <div ng-repeat="item in weather.weather">
+                <h3>Today's weather is: <b> {{item.description}}</b><br></h3>
+            </div>
+            <div>Temp: <span class="text-info"><b>{{weather.main.temp}} &#x2103;</b></span><br> </div>
+            <div>Pressure: <span class="text-info"><b>{{weather.main.pressure}} hPa</b></span><br> </div>
+            <div>Humidity: <span class="text-info"> <b>{{weather.main.humidity}} %</b></span><br> </div>
+            <div>Temp_min: <span class="text-info"><b>{{weather.main.temp_min}} &#x2103;</b></span><br> </div>
+            <div>Temp_max: <span class="text-info"><b>{{weather.main.temp_max}} &#x2103;</b></span><br> </div>
+        </div>
     </div>
-    <div>Temp: <span class="text-info"><b>{{weather.main.temp}} &#x2103;</b></span><br> </div>
-    <div>Pressure: <span class="text-info"><b>{{weather.main.pressure}} hPa</b></span><br> </div>
-    <div>Humidity: <span class="text-info"> <b>{{weather.main.humidity}} %</b></span><br> </div>
-    <div>Temp_min: <span class="text-info"><b>{{weather.main.temp_min}} &#x2103;</b></span><br> </div>
-    <div>Temp_max: <span class="text-info"><b>{{weather.main.temp_max}} &#x2103;</b></span><br> </div>
 </div>

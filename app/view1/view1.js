@@ -14,18 +14,7 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
     return $http.get('countries.json');
   })
 
-  .controller('View1Ctrl', ['$rootScope', '$scope', '$http', 'Countries', function ($rootScope, $scope, $http, Countries) {
-    $rootScope.position = {
-      'latitude': undefined,
-      'longitude': undefined
-    };
-    $rootScope.positionIsSet = false;
-    // function setWatch() {
-    $rootScope.$watch('positionIsSet', function (newValue, oldValue) {
-      console.log("huuray", newValue, oldValue);
-    });
-    // }
-    //  setWatch();
+  .controller('View1Ctrl', ['$rootScope', '$scope', '$http', 'Countries', '$q', function ($rootScope, $scope, $http, Countries, $q) {
     class Configs {
       constructor() {
         this.url = 'http://api.openweathermap.org/data/2.5/';
@@ -34,43 +23,43 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
         this.lang = "en";
       }
       getCurrentPosition() {
-        var havePosition = false;
+        var deferred = $q.defer();
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((position) => {
-            $rootScope.position.latitude = position.coords.latitude;
-            $rootScope.position.longitude = position.coords.longitude;
-            console.log("getCurrentPosition", $rootScope.position, $rootScope.positionIsSet);
-            $rootScope.positionIsSet = true;
-            console.log("getCurrentPosition", $rootScope.position, $rootScope.positionIsSet);
+            deferred.resolve(position);
           }, function (error) {
-            console.error("error", err);
-          })
+            deferred.reject(error);
+          });
         } else {
-          console.error("Geolocation is not supported by this browser.");
+          deferred.reject("Geolocation is not supported by this browser.");
         }
+        return deferred.promise;
       }
     }
 
     class OpenWeatherClass extends Configs {
       getWeatherForCountry(country) {
-        this.url += "find?q=" + country + "&type=like" + "&units=" + this.units + "&lang=" + this.lang + "&appid=" + this.apiId;
-        $http.get(this.url).then((response) => {
+        var url = this.url;
+        url += "find?q=" + country + "&type=like" + "&units=" + this.units + "&lang=" + this.lang + "&appid=" + this.apiId;
+        $http.get(url).then((response) => {
           $scope.weather = response.data.list[0];
         });
       }
 
       getWeatherForLocation() {
-        this.getCurrentPosition()
-        console.log("getWeatherForLocation", $rootScope.position);
-        // this.url += "weather?" + "lat=" + this.position.latitude + "&lon=" + this.position.longitude + "&units=" + this.units + "&lang=" + this.lang + "&appid=" + this.apiId;
-        // $http.get(this.url).then((response) => {
-        //   $scope.weather = response.data;
-        // });
+        this.getCurrentPosition().then((position) => {
+          var url = this.url;
+          url += "weather?" + "lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=" + this.units + "&lang=" + this.lang + "&appid=" + this.apiId;
+          $http.get(url).then((response) => {
+            $scope.weather = response.data;
+          });
+        }, function (error) {
+          console.error(error);
+        })
+
       }
     }
- $rootScope.positionIsSet = true;
     this.openWeather = new OpenWeatherClass();
-
     this.openWeather.getWeatherForLocation();
     $scope.selectedCountry = undefined;
     Countries.success(function (data) {

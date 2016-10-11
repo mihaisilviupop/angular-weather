@@ -59,6 +59,25 @@ angular.module('myApp.view1', ['ngRoute', 'ui.bootstrap'])
 
       }
     }
+
+    var geocoder = new google.maps.Geocoder;
+    function geocodeLatLng() {
+      var latlng = { lat: 47.6623394, lng: 23.543770199999997 };
+      geocoder.geocode({ 'location': latlng }, function (results, status) {
+        if (status === 'OK') {
+          if (results) {
+            console.log("map", results);
+          } else {
+            console.error('No results found');
+          }
+        } else {
+          console.error('Geocoder failed due to: ' + status);
+        }
+      });
+    }
+
+    geocodeLatLng();
+
     this.openWeather = new OpenWeatherClass();
     this.openWeather.getWeatherForLocation();
     $scope.selectedCountry = undefined;
